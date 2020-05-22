@@ -21,4 +21,21 @@ Actualite.getAll =  result => {
     });
 };
 
+Actualite.findById = (id, result) => {
+    connection.query(`SELECT * FROM actualite WHERE id = ${id}`, (err, res) => {
+        if(err) {
+            console.log("Error", err.message);
+            result(null, err);
+            return;
+        }
+        if(res.length) {
+            console.log("Actualite Found: ", res[0]);
+            result(null, res[0]);
+            return;
+        }
+        // Not Found Actualite  with the id
+        result({kind: "not Found"}, null);
+    })
+}
+
 module.exports = Actualite;

@@ -22,7 +22,7 @@ Manifestations.getAll = result => {
 }
 
 Manifestations.getTitre = result => {
-    connection.query("SELECT titre, id FROM manifestations", (err, res) => {
+    connection.query("SELECT * FROM manifestations", (err, res) => {
         if (err) {
             console.log("Error", err.message);
             result(null, err);
@@ -46,7 +46,7 @@ Manifestations.findById = (id, result) => {
             return;
         }
 
-        // Not Found Customer with the id
+        // Not Found Manifestation with the id
         result({kind: "not Found"}, null);
 
     })
