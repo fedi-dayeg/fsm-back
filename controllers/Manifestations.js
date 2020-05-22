@@ -19,6 +19,9 @@ exports.findAllManifestations = asyncHandler(async (req, res, next) => {
     });
 });
 
+// @desc    Get the Manifestation Titre
+// @route   Get /api/public/manifestationtitle
+// @access  Public
 exports.getManifestationByTitle = asyncHandler(async (req, res, next) => {
     await Manifestations.getTitre((err, data) => {
         if (err) {
@@ -33,6 +36,9 @@ exports.getManifestationByTitle = asyncHandler(async (req, res, next) => {
     });
 });
 
+// @desc    Get the Manifestation by Id
+// @route   Get /api/public/manifestation/:id
+// @access  Public
 exports.findOne = asyncHandler(async (req, res) => {
     await Manifestations.findById(req.params.id, (err, data) => {
         if(err) {

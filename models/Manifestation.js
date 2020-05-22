@@ -21,6 +21,7 @@ Manifestations.getAll = result => {
     })
 }
 
+// @desc    Create the GetTitre Method to Get Titre of  Manifestation
 Manifestations.getTitre = result => {
     connection.query("SELECT * FROM manifestations", (err, res) => {
         if (err) {
@@ -33,6 +34,7 @@ Manifestations.getTitre = result => {
     })
 }
 
+// @desc    Create the FindById Method to Get Manifestation by her Id
 Manifestations.findById = (id, result) => {
     connection.query(`SELECT * FROM manifestations WHERE id = ${id}`, (err, res) => {
         if(err) {

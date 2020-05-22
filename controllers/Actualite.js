@@ -23,7 +23,9 @@ exports.findAllActualite = asyncHandler(async (req, res) => {
     });
 })
 
-
+// @desc    Find Actualité by her Id
+// @route   Get /api/public/actualite/:id
+// @access  Public
 exports.findOne = asyncHandler(async (req, res) => {
     await Actualite.findById(req.params.id, (err, data) => {
         if(err) {

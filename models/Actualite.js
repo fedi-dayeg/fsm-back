@@ -8,7 +8,7 @@ const Actualite = function (actualite) {
     this.description = actualite.description;
 };
 
-
+// @desc    Create the GetAll Method to Get All the Actualité
 Actualite.getAll =  result => {
     connection.query(`SELECT * FROM actualite ORDER BY id DESC LIMIT 10`, (err, res) => {
         if (err) {
@@ -21,6 +21,7 @@ Actualite.getAll =  result => {
     });
 };
 
+// @desc    Create the Find by Id Method to Get Actualité by her Id
 Actualite.findById = (id, result) => {
     connection.query(`SELECT * FROM actualite WHERE id = ${id}`, (err, res) => {
         if(err) {
