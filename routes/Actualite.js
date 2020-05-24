@@ -1,6 +1,6 @@
 
 module.exports = app => {
-    const  actualite = require("../controllers/Actualite");
+    const  actualite = require("../controllers/ActualiteController");
 
     // Retrieve all Actualité
     app.get("/api/public/actualite", actualite.findAllActualite);

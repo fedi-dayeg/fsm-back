@@ -1,13 +1,13 @@
 const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
-const Actualite = require('../models/Actualite');
+const ActualiteController = require('../models/Actualite');
 
 
 // @desc    Get All Actualité
 // @route   Get /api/public/actualite
 // @access  Public
 exports.findAllActualite = asyncHandler(async (req, res) => {
-    await Actualite.getAll((err, data) => {
+    await ActualiteController.getAll((err, data) => {
         if(err) {
             res.status(500).send({
                 success: false,
@@ -27,7 +27,7 @@ exports.findAllActualite = asyncHandler(async (req, res) => {
 // @route   Get /api/public/actualite/:id
 // @access  Public
 exports.findOne = asyncHandler(async (req, res) => {
-    await Actualite.findById(req.params.id, (err, data) => {
+    await ActualiteController.findById(req.params.id, (err, data) => {
         if(err) {
             if (err.kind === "not Found") {
                 res.status(404).json({
@@ -35,7 +35,7 @@ exports.findOne = asyncHandler(async (req, res) => {
                 });
             } else {
                 res.status(500).json({
-                    message: "Error retrieving Actualite with id " + req.params.id
+                    message: "Error retrieving ActualiteController with id " + req.params.id
                 });
             }
         } else {

@@ -52,6 +52,7 @@ app.use(cors());
 // Mount Routers
 require("./routes/Actualite")(app);
 require("./routes/Manifestation")(app);
+require("./routes/MajRoute")(app);
 
 const PORT = process.env.PORT || 5000;
 
