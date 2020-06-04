@@ -54,4 +54,17 @@ Manifestations.findById = (id, result) => {
     })
 }
 
+// @desc    Get the number Of the manifestations in the DB
+Manifestations.getTotalManifestations = result => {
+    connection.query("SELECT COUNT(*) as manifestationCount FROM manifestations", (err, res) => {
+        if (err) {
+            console.log("Error", err.message);
+            result(null, err);
+            return;
+        }
+        console.log("Manifestation : ", res);
+        result(null, res)
+    })
+}
+
 module.exports = Manifestations;

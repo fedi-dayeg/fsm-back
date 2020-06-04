@@ -56,6 +56,7 @@ require("./routes/Actualite")(app);
 require("./routes/Manifestation")(app);
 require("./routes/MajRoute")(app);
 require("./routes/AlbumRoute")(app);
+require("./routes/ImageRoute")(app);
 
 const PORT = process.env.PORT || 5000;
 

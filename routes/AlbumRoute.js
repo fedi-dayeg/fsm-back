@@ -3,6 +3,9 @@ module.exports = app => {
 
     // Add new Album
     app.post("/api/public/album", album.postAlbum);
+    // Get All the Album
     app.get("/api/public/albums", album.GetAlbums);
+    //Find Album By Id
+    app.get("/api/public/album/:idAlbum", album.findAlbumById);
 
 }

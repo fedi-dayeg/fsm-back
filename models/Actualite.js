@@ -39,4 +39,17 @@ Actualite.findById = (id, result) => {
     })
 }
 
+// @desc    Get the Number of the Actulaite in the DB
+Actualite.getTotalActualite = result => {
+    connection.query("SELECT COUNT(*) as actualiteCount FROM actualite", (err, res) => {
+        if (err) {
+            console.log("Error", err.message);
+            result(null, err);
+            return;
+        }
+        console.log("Actualite : ", res);
+        result(null, res)
+    })
+}
+
 module.exports = Actualite;

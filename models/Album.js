@@ -3,7 +3,7 @@ const connection = require('../config/db');
 // Constructor
 const Album = function (album) {
     this.idAlbum = album.idAlbum;
-    this.image = album.image;
+    this.imageAlbumPath = album.imageAlbumPath;
     this.label = album.label;
     this.dateCreation = album.dateCreation
 }
@@ -34,6 +34,22 @@ Album.getAllAlbum = result => {
     })
 }
 
-//
+// Get Album By his Id
+Album.findAlbumById = (idAlbum, result) => {
+    connection.query(`SELECT * FROM album WHERE idAlbum = ${idAlbum}`, (err, res) => {
+        if(err) {
+            console.log("Error", err.message);
+            result(null, err);
+            return;
+        }
+        if(res.length) {
+            console.log("Album Found: ", res[0]);
+            result(null, res[0]);
+            return;
+        }
+        // Not Found Maj  with the id
+        result({kind: "not Found"}, null);
+    })
+}
 
 module.exports = Album;
