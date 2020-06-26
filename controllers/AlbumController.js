@@ -32,7 +32,10 @@ exports.postAlbum = asyncHandler(async (req, res) => {
         })
         Album.addAlbum(album, function (err, rows) {
             if (err) {
-                res.send(err)
+                res.status(500).send({
+                    success: false,
+                    message: err.message || "Some Error Occured while retrive."
+                });
             } else {
                 res.json({
                     rows

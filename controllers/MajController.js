@@ -47,3 +47,21 @@ exports.findOne = asyncHandler(async (req, res) => {
         }
     });
 });
+
+
+// @desc    Get All Number of row in the DB
+// @route   Get /api/public/majcount
+// @access  Public
+exports.getTotalOfMaj = asyncHandler(async (req, res, next) => {
+    await MajController.getTotalMaj((err, data) => {
+        if (err) {
+            return new ErrorResponse(`error occured`, 500);
+        } else {
+            res.status(200).json({
+                success: true,
+                message: "Success",
+                data: data
+            });
+        }
+    });
+});

@@ -5,5 +5,7 @@ module.exports = app => {
     app.get("/api/public/maj", maj.findAllMaj);
     // Retrieve Actualité by Id
     app.get("/api/public/maj/:id", maj.findOne);
+    // Retrieve the number of row in table Maj
+    app.get("/api/public/majcount", maj.getTotalOfMaj);
 }
 

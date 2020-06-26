@@ -8,8 +8,8 @@ const rateLimit = require('express-rate-limit');
 const hpp = require('hpp');
 const cors = require('cors');
 const connectDb = require('./config/db');
-
-// Router Files
+const bodyParser = require("body-parser");
+// Router File
 
 
 //Load env vars
@@ -19,6 +19,8 @@ dotenv.config({path: './config/config.env'});
 
 const app = express();
 
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
 //Body Parser
 app.use(express.json());
 
@@ -34,7 +36,7 @@ if (process.env.NODE_ENV === 'development') {
 app.use(helmet());
 
 // Prevent XSS attacks
-app.use(xss());
+/*app.use(xss());*/
 
 // Rate Limiting
 const limiter = rateLimit({
@@ -44,7 +46,7 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // Prevent http param pollution
-app.use(hpp());
+/*app.use(hpp());*/
 
 // Enable CORS
 app.use(cors());

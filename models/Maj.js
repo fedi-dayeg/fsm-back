@@ -39,4 +39,17 @@ Maj.findById = (id, result) => {
     })
 }
 
+// @desc    Get the Number of the Maj in the DB
+Maj.getTotalMaj = result => {
+    connection.query("SELECT COUNT(*) as majCount FROM maj", (err, res) => {
+        if (err) {
+            console.log("Error", err.message);
+            result(null, err);
+            return;
+        }
+        console.log("Maj : ", res);
+        result(null, res)
+    })
+}
+
 module.exports = Maj;
