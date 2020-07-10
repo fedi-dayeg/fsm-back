@@ -1,8 +1,8 @@
-
+const authJwt = require("../middleware/authJwt");
 module.exports = app => {
     const  actualite = require("../controllers/ActualiteController");
     // Put new Actualite
-    app.post("/api/public/addactualite", actualite.putActualite)
+    app.post("/api/public/addactualite",[authJwt.verifyToken], actualite.putActualite)
     // Retrieve all Actualité
     app.get("/api/public/actualite", actualite.findAllActualite);
     // Retrieve Actualité by Id

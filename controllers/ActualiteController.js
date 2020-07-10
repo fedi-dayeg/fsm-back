@@ -129,7 +129,7 @@ exports.deleteAct = asyncHandler ( async (req, res) => {
                 });
             } else {
                 res.status(500).json({
-                    message: "Could not delete Customer with id " + req.params.customerId
+                    message: "Could not delete Customer with id " + req.params.id
                 });
             }
         } else res.json({ message: `Actualite was deleted successfully!` });

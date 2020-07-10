@@ -8,6 +8,20 @@ const Manifestations = function (manifestations) {
     this.description = manifestations.description;
 }
 
+// @desc    CAdd new Manifestation to the DB
+Manifestations.AddManifestation = (newManifestation, result) => {
+    connection.query('INSERT INTO manifestations SET ?', newManifestation, (err, res) => {
+        if (err) {
+            console.log("Error in : ", err);
+            result(err, null);
+            return;
+        }
+        console.log("Created Manifestation: ", {id: res.id, ...newManifestation});
+        result(null, {id: res.id, ...newManifestation});
+
+    });
+}
+
 // @desc    Create the Get Method to Get all the Manifestation
 Manifestations.getAll = result => {
     connection.query("SELECT * FROM manifestations", (err, res) => {
@@ -65,6 +79,44 @@ Manifestations.getTotalManifestations = result => {
         console.log("Manifestation : ", res);
         result(null, res)
     })
+}
+
+
+// @desc    Delete the Manifestation From the DB
+Manifestations.deleteManifestation = (id, result) => {
+    connection.query("DELETE FROM manifestations where id = ?", id, (err, res) => {
+        if(err) {
+            console.log("Error", err.message);
+            result(null, err);
+            return;
+        }
+        if(res.affectedRows === 0) {
+            result({ kind: "not_found" }, null);
+            return;
+        }
+        console.log("deleted Manifestation with id: ", id);
+        result(null, res);
+    })
+}
+
+// @desc    Upadete the Manifestation by Id From the DB
+Manifestations.updateManifestationById = (id, manifestations, result) => {
+    connection.query("UPDATE manifestations SET titre = ?, date = ?, description = ? where id = ?",
+        [manifestations.titre, manifestations.date, manifestations.description, id],
+        (err, res) => {
+            if (err) {
+                console.log("error",err.message);
+                result(null, err);
+                return;
+            }
+            if (res.affectedRows === 0) {
+                //not Found Manifestation with the id
+                result({kind: "not_found"}, null);
+                return;
+            }
+            console.log("update Manifestation: ", {id: id, ...manifestations});
+            result(null, {id: id, ...manifestations});
+        });
 }
 
 module.exports = Manifestations;

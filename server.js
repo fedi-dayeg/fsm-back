@@ -10,10 +10,9 @@ const cors = require('cors');
 const connectDb = require('./config/db');
 const bodyParser = require("body-parser");
 // Router File
-
+global.config = require('./config/config');
 
 //Load env vars
-dotenv.config({path: './config/config.env'});
 
 // connect to MYSQL
 
@@ -23,6 +22,9 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 //Body Parser
 app.use(express.json());
+
+dotenv.config({path: './config/config.env'});
+
 
 //Cookie parser
 app.use(cookieParser());
@@ -59,6 +61,8 @@ require("./routes/Manifestation")(app);
 require("./routes/MajRoute")(app);
 require("./routes/AlbumRoute")(app);
 require("./routes/ImageRoute")(app);
+require("./routes/EtudiantsRoute")(app);
+//app.use(require('./middleware/TokenValidator'));
 
 const PORT = process.env.PORT || 5000;
 
