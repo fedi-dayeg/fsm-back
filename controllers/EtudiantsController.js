@@ -1,102 +1,55 @@
-const Etudiants = require('../models/Etudiants');
-const jwt = require('jsonwebtoken');
-const config = require('../config/config');
-const bcrypt = require('bcryptjs');
-const constants = require('../config/constants');
+    const Etudiants = require('../models/Etudiants');
+    const jwt = require('jsonwebtoken');
+    const config = require('../config/config');
+    const bcrypt = require('bcryptjs');
+    const constants = require('../config/constants');
+    const asyncHandler = require('../middleware/async');
 
-/*exports.create_Etudiants =  (req, res) => {
-    const newEtudiants = new Etudiants(req.body);
+    exports.create = (req, res) => {
+        if (!req.body) {
+            res.status(400).send({
+                message: "Content can not be empty!"
+            });
+        }
 
-    if (!newEtudiants.nom || !newEtudiants.prenom || !newEtudiants.cin || !newEtudiants.etat || !newEtudiants.grade ||
-    !newEtudiants.dateInscription || !newEtudiants.email || !newEtudiants.password || !newEtudiants.etablissement ||
-    !newEtudiants.universite || !newEtudiants.create_date || !newEtudiants.last_update) {
-        res.status(constants.HTTP_BAD_REQUEST).json({
-            error: true,
-            error_code: constants.EMPTY_FIELDS,
-            message: 'Veuillez remplir les champs'
+
+        const etudiants = new Etudiants({
+            nom: req.body.nom,
+            prenom: req.body.prenom,
+            cin: req.body.cin,
+            etat: req.body.etat,
+            grade: req.body.grade,
+            dateInscription: req.body.dateInscription,
+            email: req.body.email,
+            password: bcrypt.hashSync(req.body.password, 8),
+            etablissement: req.body.etablissement,
+            universite: req.body.universite,
+            activate: req.body.activate
         });
-    } else {
-        Etudiants.getEtudiantByEmail(newEtudiants.email,  (err, etudiants) => {
+
+        Etudiants.verifEtudiantByEmail(etudiants.email, (err, data) =>{
             if (err) {
                 res.send(err);
-            } else  if (etudiants.length > 0) { //email Etudiant trouver dans la BD
+            }
+            else if (data.length > 0) {
                 res.json({
                     error: true,
-                    error_code: constants.EMAIL_ALREADY_EXISTS,
-                    message: 'L\'email  ' + newEtudiants.email + ' existe déjà ',
+                    message: 'email existe déjà ',
                 });
-            } else { //l'email n'existe pas dans le base
-                Etudiants.createEtudiants(newEtudiants,  (err, etudiants) => {
-                    if (err) {
-                        res.send(err);
-                    } else {
-                        console.log(etudiants);
-                        // Generaion du token pour sécurité api
-                        const token = jwt.sign(etudiants, 'fedidayeg');
-                        res.status(constants.HTTP_CREATED).json({
-                            error: false,
-                            error_code: constants.SUCCESSFULLY_COMPLETED,
-                            message: ' Création de ' + newEtudiants.nom.toUpperCase() + ' effectuer avec succès ! ',
-                            etudiants,
-                            token
-                        });
-                    }
-                });
-                 }
-        });
-    }
-
-}*/
-
-exports.create = (req, res) => {
-    const etudiants = new Etudiants({
-        nom: req.body.nom,
-        prenom: req.body.prenom,
-        cin: req.body.cin,
-        etat: req.body.etat,
-        grade: req.body.grade,
-        dateInscription: req.body.dateInscription,
-        email: req.body.email,
-        password: bcrypt.hashSync(req.body.password, 8),
-        etablissement: req.body.etablissement,
-        universite: req.body.universite,
-        create_date: req.body.create_date,
-        last_update: req.body.last_update
-    });
-    if (!req.body) {
-        res.status(400).send({
-            error: true,
-            error_code: constants.EMPTY_FIELDS,
-            message: 'Veuillez remplir les champs'
-        });
-    } else {
-        Etudiants.getEtudiantByEmail(etudiants.email, (err, data) => {
-            if (err) {
-                res.send({
-                    message: err.message
-                });
-            } else if (data.length > 0) { //email Etudiant trouver dans la BD
-                res.json({
-                    error: true,
-                    error_code: constants.EMAIL_ALREADY_EXISTS,
-                    message: 'L\'email  ' + etudiants.email + ' existe déjà ',
-                });
-
-            } else {
-                //Save Etudiant in DB
+            }
+            else {
                 Etudiants.create(etudiants, (err, data) => {
                     if (err) {
                         res.status(500).send({
-                            message: err.message || "Some error occurred while creating the Etudiant."
+                            message: err.message || "Some error occurred while creating the Admin."
                         });
-                    } else res.json({
-                        data: data
-                    });
+                    } else
+                        res.send(data);
                 });
             }
-        });
+        })
+
     }
-}
 
 exports.login = (req, res) => {
 
@@ -155,3 +108,112 @@ exports.login = (req, res) => {
         });
 
 }
+
+
+
+
+    exports.updateEtudiantActive = asyncHandler((req, res) => {
+        //Valide Request
+        if(!req.body) {
+            res.status(400).json({
+                message: "Admin can not be empty!"
+            });
+        }
+        Etudiants.updateEtudiantActive(req.params.id,
+            (err, data) => {
+                if(err) {
+                    if(err.kind === "not find") {
+                        res.status(404).json({
+                            message: `Not Found Etudiant with id ${req.params.id}.`
+                        });
+                    } else {
+                        res.status(500).json({
+                            message: "Error update Etudiants with Id " + req.params.id
+                        });
+                    }
+                } else res.json(data);
+            });
+    });
+
+
+    exports.findAllEtudiants = asyncHandler(async (req, res) => {
+        await Etudiants.getAll((err, data) => {
+            if (err) {
+                res.status(500).send({
+                    success: false,
+                    message: err.message || "Some Error Occured while retrive."
+                });
+            } else {
+                res.status(200).send({
+                    success: true,
+                    message: "success",
+                    data: data
+                });
+            }
+        });
+    })
+
+
+    exports.deleteEtudiants = asyncHandler ( async (req, res) => {
+        await Etudiants.deleteEtudiants(req.params.id, (err, data) => {
+            if (err) {
+                if (err.kind === "not_found") {
+                    res.status(404).json({
+                        message: `Not found Etudiants with id ${req.params.id}.`
+                    });
+                } else {
+                    res.status(500).json({
+                        message: "Could not delete Etudiants with id " + req.params.id
+                    });
+                }
+            } else res.json({ message: `Etudiants was deleted successfully!` });
+        })
+    });
+
+
+    exports.updateEtudiantById = asyncHandler((req, res) => {
+        //Valide Request
+        if(!req.body) {
+            res.status(400).json({
+                message: "Etudiants can not be empty!"
+            });
+        }
+        Etudiants.updateEtudiantById(req.params.id, new Etudiants(req.body),
+            (err, data) => {
+                if(err) {
+                    if(err.kind === "not find") {
+                        res.status(404).json({
+                            message: `Not Found Etudiants with id ${req.params.id}.`
+                        });
+                    } else {
+                        res.status(500).json({
+                            message: "Error update Etudiants with Id " + req.params.id
+                        });
+                    }
+                } else res.json(data);
+            });
+    });
+
+
+
+    exports.findEtudiants = asyncHandler(async (req, res) => {
+        await Etudiants.findEtudiantsById(req.params.id, (err, data) => {
+            if (err) {
+                if (err.kind === "not Found") {
+                    res.status(404).json({
+                        message: `Not found Etudiants with id ${req.params.id}.`
+                    });
+                } else {
+                    res.status(500).json({
+                        message: "Error retrieving Etudiants with id " + req.params.id
+                    });
+                }
+            } else {
+                res.status(200).json({
+                    success: true,
+                    message: "Success",
+                    data: data
+                });
+            }
+        });
+    });

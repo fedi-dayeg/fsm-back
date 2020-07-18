@@ -1,64 +1,5 @@
 const connection = require('../config/db');
 const bcrypt = require('bcryptjs');
-/*const saltRound = 10;
-
-//Etudiants Constructor
-const Etudiants = function (etudiants) {
-    this.id = etudiants.id;
-    this.nom = etudiants.nom;
-    this.prenom = etudiants.prenom;
-    this.cin = etudiants.cin;
-    this.etat = etudiants.etat;
-    this.grade = etudiants.grade;
-    this.dateInscription = etudiants.dateInscription;
-    this.email = etudiants.email;
-    this.password = etudiants.password;
-    this.etablissement = etudiants.etablissement;
-    this.universite = etudiants.universite;
-    this.create_date = etudiants.create_date;
-    this.last_update = etudiants.last_update;
-};
-Etudiants.createEtudiants =  (newEtudiants, result) => {
-    // Insert Into etudiants
-    bcrypt.hashSync(newEtudiants.password, saltRound, function (err, hash) {
-        console.log(hash);
-        connection.query("INSERT INTO etudiant(nom, prenom, cin, etat, grade, dateInscription, email, password, etablissement, universite, create_date, last_update) values (?,?,?,?,?,?,?,?,?,?,?,?)",
-            [newEtudiants.nom,newEtudiants.prenom, newEtudiants.cin,newEtudiants.etat,newEtudiants.grade, newEtudiants.dateInscription, newEtudiants.email,hash,newEtudiants.etablissement, newEtudiants.universite, newEtudiants.create_date, newEtudiants.last_update],  (err, res) => {
-            if (err) {
-                console.log("error", err);
-                result(err, null);
-                return;
-            } else {
-                console.log("Insertion effectuer avec succès, l'id de l'insertion est : ", res.id);
-                result(null, res.id);
-            }
-            });
-    });
-};
-
-Etudiants.getEtudiantsById =  (etudiantId, result) => {
-    connection.query("SELECT * FROM etudiant WHERE id = ?", etudiantId, function (err, res) {
-        if (err) {
-            console.log("error", err);
-            result(null, err);
-        } else {
-            result(null, res);
-        }
-    });
-};
-
-Etudiants.getEtudiantByEmail = function(etudiantEmail, result) {
-    connection.query("SELECT * FROM etudiant where email = ?",etudiantEmail, function (err, res) {
-        if (err) {
-            console.log("error", err);
-            result(err, null);
-        } else {
-            result(null, res);
-        }
-    });
-};
-
-module.exports = Etudiants;*/
 
 const etudiants = function (etudiants) {
     this.id = etudiants.id;
@@ -72,8 +13,7 @@ const etudiants = function (etudiants) {
     this.password = etudiants.password;
     this.etablissement = etudiants.etablissement;
     this.universite = etudiants.universite;
-    this.create_date = etudiants.create_date;
-    this.last_update = etudiants.last_update;
+    this.activate = etudiants.activate;
 };
 etudiants.create = (newEtudiant, result) => {
     connection.query("INSERT INTO etudiant SET ?", newEtudiant, (err, res) => {
@@ -88,7 +28,7 @@ etudiants.create = (newEtudiant, result) => {
 };
 
 etudiants.getEtudiantByEmail = (email, result) => {
-    connection.query('SELECT * FROM etudiant WHERE email = ?',email,  (err, res) => {
+    connection.query('SELECT * FROM etudiant WHERE email = ? AND activate = 1',email,  (err, res) => {
         if (err) {
             console.log("error", err);
             result({ kind: "not_found" }, err);
@@ -103,6 +43,8 @@ etudiants.getEtudiantByEmail = (email, result) => {
 
     });
 };
+
+
 
 etudiants.authentification = (etudiants,result) =>{
     connection.query("SELECT * FROM etudiant WHERE email = ?",[etudiants.email], (err,results) =>{
@@ -122,4 +64,114 @@ etudiants.authentification = (etudiants,result) =>{
         }
     });
 };
+
+etudiants.verifEtudiantByEmail = (email, result) => {
+    connection.query('SELECT * FROM etudiant WHERE email = ?', email, (err, res) => {
+        if (err) {
+            console.log("error", err);
+            /*result({kind: "not_found"}, err);*/
+            result(null, err);
+            return;
+        }
+        else {
+            result(null, res);
+        }
+
+    });
+};
+
+//Get All Etudiants
+etudiants.getAll = result => {
+    connection.query(`SELECT * FROM etudiant`, (err, res) => {
+        if (err) {
+            console.log("ERROR");
+            result(null, err);
+            return;
+        }
+        console.log("Etudiant: ", res);
+        result(null, res);
+    });
+};
+
+
+// @desc    Delete the Etudiants From the DB
+etudiants.deleteEtudiants = (id, result) => {
+    connection.query("DELETE FROM etudiant where id = ?", id, (err, res) => {
+        if(err) {
+            console.log("Error", err.message);
+            result(null, err);
+            return;
+        }
+        if(res.affectedRows === 0) {
+            result({ kind: "not_found" }, null);
+            return;
+        }
+        console.log("deleted Etudiants with id: ", id);
+        result(null, res);
+    })
+}
+
+
+// @desc    Upadete the Etudiants by Id From the DB
+etudiants.updateEtudiantById = (id, etudiants, result) => {
+    connection.query("UPDATE etudiant SET nom = ?, prenom = ?, cin = ?, etat = ?, grade = ?, dateInscription = ?, email = ?, etablissement = ?, universite = ? where id = ?",
+        [etudiants.nom, etudiants.prenom, etudiants.cin, etudiants.etat, etudiants.grade, etudiants.dateInscription, etudiants.email, etudiants.etablissement, etudiants.universite, id],
+        (err, res) => {
+            if (err) {
+                console.log("error",err.message);
+                result(null, err);
+                return;
+            }
+            if (res.affectedRows === 0) {
+                //not Found Admin with the id
+                result({kind: "not_found"}, null);
+                return;
+            }
+            console.log("update Etudiants: ", {id: id, ...etudiants});
+            result(null, {id: id, ...etudiants});
+        });
+}
+
+
+
+// @desc    Create the Find by Id Method to Get Admin by her Id
+etudiants.findEtudiantsById = (id, result) => {
+    connection.query(`SELECT * FROM etudiant WHERE id = ${id}`, (err, res) => {
+        if (err) {
+            console.log("Error", err.message);
+            result(null, err);
+            return;
+        }
+        if (res.length) {
+            console.log("Etudiants Found: ", res[0]);
+            result(null, res[0]);
+            return;
+        }
+        // Not Found Etudiants  with the id
+        result({kind: "not Found"}, null);
+    })
+}
+
+
+// @desc    Upadete the Etudiants by Id From the DB
+etudiants.updateEtudiantActive = (id, result) => {
+    connection.query("UPDATE etudiant SET activate = 1 where id = ?",
+        [id],
+        (err, res) => {
+            if (err) {
+                console.log("error",err.message);
+                result(null, err);
+                return;
+            }
+            if (res.affectedRows === 0) {
+                //not Found Admin with the id
+                result({kind: "not_found"}, null);
+                return;
+            }
+            console.log("update Etudiants: ", {id: id, ...etudiants});
+            result(null, res);
+        });
+}
+
+
 module.exports = etudiants;

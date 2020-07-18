@@ -4,6 +4,7 @@ const multer = require('multer');
 const path = require('path');
 
 // store the image in the public folder
+/*
 let storage = multer.diskStorage({
     destination: function (req, file, callback) {
         callback(null, './public/image')
@@ -19,10 +20,12 @@ let uploads = multer({storage: storage}).single('photo');
 exports.postAlbum = asyncHandler(async (req, res) => {
     uploads(req, res, function (err) {
         if (err) {
+
             return res.status(500).json({
                 success: false,
-                message: err.message
+                message: 'Error Upload file'
             })
+
         }
         const album = new Album({
             idAlbum: req.body.idAlbum,
@@ -32,10 +35,52 @@ exports.postAlbum = asyncHandler(async (req, res) => {
         })
         Album.addAlbum(album, function (err, rows) {
             if (err) {
-                res.status(500).send({
-                    success: false,
-                    message: err.message || "Some Error Occured while retrive."
+                res.send(err)
+
+            } else {
+                res.json({
+                    rows
                 });
+            }
+        })
+    })
+})
+*/
+
+
+
+// store the image in the public folder
+let storage = multer.diskStorage({
+    destination: function (req, file, callback) {
+        callback(null, './public/image')
+    },
+    filename: function (req, file, callback) {
+        callback(null, file.fieldname + Date.now() + path.extname(file.originalname))
+    }
+})
+
+let uploads = multer({storage: storage}).single('photo');
+
+
+// create request API to add new Image
+exports.postAlbum = asyncHandler(async (req, res) => {
+    uploads(req, res, function (err) {
+        if (err) {
+           /* return res.status(500).json({
+                success: false,
+                message: 'Error Upload file'
+            })*/
+          return  console.log(req.body.label);
+        }
+        const album = new Album({
+            idAlbum: req.body.idAlbum,
+            imageAlbumPath: req.file.filename,
+            label: req.body.label,
+            dateCreation: req.body.dateCreation
+        })
+        Album.addAlbum(album, function (err, rows) {
+            if (err) {
+                res.send(err)
             } else {
                 res.json({
                     rows

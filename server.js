@@ -62,6 +62,9 @@ require("./routes/MajRoute")(app);
 require("./routes/AlbumRoute")(app);
 require("./routes/ImageRoute")(app);
 require("./routes/EtudiantsRoute")(app);
+require("./routes/AdminRoute")(app);
+require("./routes/SuperAdminRoute")(app);
+
 //app.use(require('./middleware/TokenValidator'));
 
 const PORT = process.env.PORT || 5000;

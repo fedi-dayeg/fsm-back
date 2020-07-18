@@ -9,6 +9,20 @@ const Album = function (album) {
 }
 
 // add new Album to DB
+/*
+Album.addAlbum = (newAlbum, result) => {
+    connection.query('INSERT INTO  album SET ?', newAlbum, (err, res) => {
+        if (err) {
+            console.log("error in: ", err);
+            result(err, null);
+            return;
+        }
+        console.log("created Album: " ,{idAlbum: res.idAlbum, ...newAlbum});
+        result(null, {idAlbum: res.idAlbum, ...newAlbum});
+    });
+}
+*/
+
 Album.addAlbum = (newAlbum, result) => {
     connection.query('INSERT INTO  album SET ?', newAlbum, (err, res) => {
         if (err) {
