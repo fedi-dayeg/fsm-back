@@ -109,7 +109,7 @@ exports.GetAlbums = asyncHandler(async (req, res) => {
 })
 
 
-// Find Album by Id
+/*  */
 exports.findAlbumById = asyncHandler(async (req, res) => {
     await Album.findAlbumById(req.params.idAlbum, (err, data) => {
         if(err) {

@@ -2,10 +2,11 @@ const ErrorResponse = require('../utils/errorResponse');
 const asyncHandler = require('../middleware/async');
 const ActualiteController = require('../models/Actualite');
 
-// @desc    Add newl Actualité
-// @route   put/api/public/actualite
-// @access  Public
-
+/**
+ *
+ * @param req
+ * @param res
+ */
 exports.putActualite = (req, res) => {
 
     // Validate request
@@ -32,9 +33,10 @@ exports.putActualite = (req, res) => {
     });
 }
 
-// @desc    Get All Actualité
-// @route   Get /api/public/actualite
-// @access  Public
+/**
+ *
+ * @type {function(...[any]=)}
+ */
 exports.findAllActualite = asyncHandler(async (req, res) => {
     await ActualiteController.getAll((err, data) => {
         if (err) {
@@ -53,9 +55,10 @@ exports.findAllActualite = asyncHandler(async (req, res) => {
 })
 
 
-// @desc    Get All Actualité with no LIMIT
-// @route   Get /api/public/actualite
-// @access  Public
+/* @desc    Get All Actualité with no LIMIT
+ @route   Get /api/public/actualite
+ @access  Public
+ */
 exports.findAllAct = asyncHandler(async (req, res) => {
     await ActualiteController.getAllAct((err, data) => {
         if (err) {

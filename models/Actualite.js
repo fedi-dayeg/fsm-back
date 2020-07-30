@@ -49,7 +49,11 @@ Actualite.getAllAct = result => {
     });
 };
 
-// @desc    Create the Find by Id Method to Get Actualité by her Id
+/**
+ *
+ * @param id
+ * @param result
+ */
 Actualite.findById = (id, result) => {
     connection.query(`SELECT * FROM actualite WHERE id = ${id}`, (err, res) => {
         if (err) {
@@ -67,7 +71,10 @@ Actualite.findById = (id, result) => {
     })
 }
 
-// @desc    Get the Number of the Actulaite in the DB
+/**
+ *
+ * @param result
+ */
 Actualite.getTotalActualite = result => {
     connection.query("SELECT COUNT(*) as actualiteCount FROM actualite", (err, res) => {
         if (err) {

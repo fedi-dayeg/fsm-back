@@ -13,4 +13,6 @@ module.exports = app => {
     app.put("/api/public/update/etudiant/:id", etudiants.updateEtudiantById);
     // Retrieve Etudiants by Id
     app.get("/api/public/etudiant/:id", etudiants.findEtudiants);
+
+    app.get("/api/public/etudiantemail/:email", etudiants.verifEmail);
 }

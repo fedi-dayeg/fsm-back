@@ -173,5 +173,23 @@ etudiants.updateEtudiantActive = (id, result) => {
         });
 }
 
+etudiants.verifyEmail = (email, result) => {
+    connection.query('SELECT email FROM etudiant WHERE email = ?',[email], (err, res) => {
+        if (err) {
+            console.log("Error", err.message);
+            result(null, err);
+            return;
+        }
+        if (res.length) {
+            console.log("email Found: ", res[0]);
+            result(null, res[0]);
+            return;
+        }
+        // Not Found Etudiants  with the id
+        result({kind: "not_Found"}, null);
+
+    });
+};
+
 
 module.exports = etudiants;
